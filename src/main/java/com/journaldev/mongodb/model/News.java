@@ -14,6 +14,7 @@ public class News {
 	private String titulo;
 	private String descricao;
 	private List<String> ids_person_voto;
+	private boolean votou;
 	
 	public String getId() {
 		return id;
@@ -56,6 +57,12 @@ public class News {
 	}
 	public void setIdPersonVoto(List<String> ids_person_voto) {
 		this.ids_person_voto = ids_person_voto;
+	}
+	public boolean isVotou() {
+		return votou;
+	}
+	public void setVotou(boolean votou) {
+		this.votou = votou;
 	}
 
 }

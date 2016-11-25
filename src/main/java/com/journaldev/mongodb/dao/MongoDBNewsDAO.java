@@ -1,14 +1,13 @@
 package com.journaldev.mongodb.dao;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.bson.types.ObjectId;
 
 import com.journaldev.mongodb.converter.NewsConverter;
-import com.journaldev.mongodb.converter.PersonConverter;
 import com.journaldev.mongodb.model.News;
-import com.journaldev.mongodb.model.Person;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -27,17 +26,24 @@ public class MongoDBNewsDAO {
 	}
 
 	public News createNews(News n) {
+		
+		Calendar cal = Calendar.getInstance();
+		n.setDataPublicacao(String.valueOf(cal.getTime()));
+		
 		DBObject doc = NewsConverter.toDBObject(n);
 		this.col.insert(doc);
 		ObjectId id = (ObjectId) doc.get("_id");
 		n.setId(id.toString());
-		return n;
+	
+		return readNews(n);
 	}
 
-	public void updateNews(News n) {
+	public News updateNews(News n) {
 		DBObject query = BasicDBObjectBuilder.start()
 				.append("_id", new ObjectId(n.getId())).get();
 		this.col.update(query, NewsConverter.toDBObject(n));
+		
+		return readNews(n);
 	}
 
 	public List<News> readAllNews() {
