@@ -10,7 +10,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 
@@ -19,9 +18,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.journaldev.mongodb.dao.MongoDBNewsDAO;
-import com.journaldev.mongodb.dao.MongoDBPersonDAO;
+import com.journaldev.mongodb.model.Curtida;
 import com.journaldev.mongodb.model.News;
-import com.journaldev.mongodb.model.Person;
 import com.mongodb.MongoClient;
 
 
@@ -33,15 +31,7 @@ public class NewsResource {
 		JsonParser jsonParser = new JsonParser();
 		return jsonParser.parse(s);
 	}
-	
-	private boolean findPersonVoto(List<String> ids_person, String id_find ){
-		for (String id: ids_person ){
-			if(id_find.equals(id))
-				return true;
-		}
-		return false;
-	}
-	
+
 	private String createResponse(boolean error, Object data, String msg){
 		JsonObject j = new JsonObject();
 		j.addProperty("error", error);
@@ -55,7 +45,17 @@ public class NewsResource {
 		
 		return j.toString();
 	}
-	
+
+	private int findPersonCurtida(List<Curtida> curtidas, String id_person_find ){
+		int index = -1;
+		for (Curtida curtida: curtidas ){
+			if(curtida.getId_person().equals(id_person_find)){
+				return curtidas.indexOf(curtida);
+			}
+		}
+		return index;
+	}
+		
 	@POST
 	@Path("/inserir")
 	@Consumes("application/json")
@@ -111,30 +111,25 @@ public class NewsResource {
 	}
 
 	@GET
-	@Path("/getNewsById/{id_news}/{id_person}")
+	@Path("/getNewsById/{id_news}")
 	@Produces("application/json")
-	public Response getNewsById(@PathParam("id_news") String id_news, @PathParam("id_person") String id_person){
+	public Response getNewsById(@PathParam("id_news") String id_news){
 		
 		try {
 			MongoClient mongoClient = new MongoClient();
 			MongoDBNewsDAO mongoNews = new MongoDBNewsDAO(mongoClient);
-			MongoDBPersonDAO mongoPerson = new MongoDBPersonDAO(mongoClient);
 			
 			// read news
 			News news = new News();
 			news.setId(id_news);
 			news = mongoNews.readNews(news);
-			
-			// read person
-			Person p = new Person();
-			p.setId(id_person);
-			p = mongoPerson.readPerson(p);
-			
-			// verify voto
-			news.setVotou(findPersonVoto(news.getIdPersonVoto(), id_person));
-			
-			String response = createResponse(false, news, "Not√≠cia");
-			return Response.status(200).entity(response).build();
+			if(news != null){
+				String response = createResponse(false, news, "Noticia");
+				return Response.status(200).entity(response).build();		
+			}else{
+				String response = createResponse(true, null, "Noticia n„o exite.");
+				return Response.status(200).entity(response).build();			
+			}
 			
 		} catch (UnknownHostException e) {
 			String response = createResponse(true, null, e.getMessage());
@@ -187,68 +182,35 @@ public class NewsResource {
 		
 	}
 	
+	
 	@POST
-	@Path("/createVoto/{id_news}/{id_person}")
+	@Path("/curtir")
+	@Consumes("application/json")
 	@Produces("application/json")
-	public Response createVoto(@PathParam("id_news") String id_news, @PathParam("id_person") String id_person){
+	public Response curtir(String curtid){
 		
 		try {
 			MongoClient mongoClient = new MongoClient();
 			MongoDBNewsDAO mongo = new MongoDBNewsDAO(mongoClient);
 			
+			Curtida curtida = new Gson().fromJson(curtid, Curtida.class);
 			News news = new News();
 			// read news 
-			news.setId(id_news);
+			news.setId(curtida.getId_news());
 			news = mongo.readNews(news);
 			
-			// update news
-			// se n√£o tiver voto adiciona
-			String msg = "";
-			if(!findPersonVoto(news.getIdPersonVoto(), id_person)){
-				news.getIdPersonVoto().add(id_person);
-				news = mongo.updateNews(news);
-				news.setVotou(true);
-				msg = "Voto criado com sucesso.";
+			
+			int index = findPersonCurtida(news.getCurtidas(), curtida.getId_person());
+			// se j· exite sÛ atualiza
+			if(index != -1){
+				news.getCurtidas().get(index).setLike(curtida.getLike());
 			}else{
-				news.setVotou(true);
-				msg = "Voc√™ j√° voltou neste post.";
+				news.getCurtidas().add(curtida);
 			}
-			
-			String response = createResponse(false, news, msg);
-			return Response.status(200).entity(response).build();
-			
-		} catch (UnknownHostException e) {
-			String response = createResponse(true, null, e.getMessage());
-			return Response.status(500).entity(response).build();
-		}
-		
-	}
-	
-	
-	@POST
-	@Path("/removeVoto/{id_news}/{id_person}")
-	@Produces("application/json")
-	public Response removeVoto(@PathParam("id_news") String id_news, @PathParam("id_person") String id_person){
-		
-		try {
-			MongoClient mongoClient = new MongoClient();
-			MongoDBNewsDAO mongo = new MongoDBNewsDAO(mongoClient);
-			
-			News news = new News();
-			// read news 
-			news.setId(id_news);
-			news = mongo.readNews(news);
-			
 			// update news
-			String msg = "Voc√™ n√£o pussui voto neste post.";
-			for (int i = 0; i < news.getIdPersonVoto().size(); i++){
-				if(news.getIdPersonVoto().get(i).equals(id_person)){
-					news.getIdPersonVoto().remove(i);
-					msg = "Voto removido com sucesso.";
-					news.setVotou(false);
-				}
-			}
 			news = mongo.updateNews(news);
+			
+			String msg = curtida.getLike() ? "VocÍ curtiu!": "VocÍ n„o curtiu!";
 			
 			String response = createResponse(false, news, msg);
 			return Response.status(200).entity(response).build();

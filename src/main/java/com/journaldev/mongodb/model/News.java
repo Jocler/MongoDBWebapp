@@ -8,13 +8,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class News {
 	
 	private String id;
-	private String id_person;
+	private Person person;
 	private String data_publicacao;
 	private String tipo;
 	private String titulo;
 	private String descricao;
-	private List<String> ids_person_voto;
 	private boolean votou;
+	private List<Curtida> curtidas;
 	
 	public String getId() {
 		return id;
@@ -22,11 +22,12 @@ public class News {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getIdPerson() {
-		return id_person;
+	
+	public Person getPerson() {
+		return person;
 	}
-	public void setIdPerson(String id_person) {
-		this.id_person = id_person;
+	public void setPerson(Person person) {
+		this.person = person;
 	}
 	public String getDataPublicacao() {
 		return data_publicacao;
@@ -52,17 +53,17 @@ public class News {
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
-	public List<String> getIdPersonVoto() {
-		return ids_person_voto;
-	}
-	public void setIdPersonVoto(List<String> ids_person_voto) {
-		this.ids_person_voto = ids_person_voto;
-	}
 	public boolean isVotou() {
 		return votou;
 	}
 	public void setVotou(boolean votou) {
 		this.votou = votou;
+	}
+	public List<Curtida> getCurtidas() {
+		return curtidas;
+	}
+	public void setCurtidas(List<Curtida> curtidas) {
+		this.curtidas = curtidas;
 	}
 
 }

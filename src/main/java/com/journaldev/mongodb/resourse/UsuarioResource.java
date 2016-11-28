@@ -2,14 +2,12 @@ package com.journaldev.mongodb.resourse;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path; 
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 
@@ -25,12 +23,25 @@ import com.mongodb.MongoClient;
 @Path("/usuario")
 public class UsuarioResource {
 	
-	private JsonElement parsePersonToJsonObject(Person person){
+	private JsonElement parsePersonToJsonObject(Object person){
 		String s = new Gson().toJson(person);
 		JsonParser jsonParser = new JsonParser();
 		return jsonParser.parse(s);	
 	}
 	
+	private String createResponse(boolean error, Object data, String msg){
+		JsonObject j = new JsonObject();
+		j.addProperty("error", error);
+		
+		if(data != null)
+			j.add("data", parsePersonToJsonObject(data));
+		else
+			j.addProperty("data", "");
+		
+		j.addProperty("message", msg );
+		
+		return j.toString();
+	}
 	
 	@POST
 	@Path("/inserir")
@@ -41,26 +52,20 @@ public class UsuarioResource {
 	
 			MongoClient mongoClient = new MongoClient();
 			MongoDBPersonDAO personDAO = new MongoDBPersonDAO(mongoClient);
-			personDAO.createPerson(person);
-		
-			JsonObject j = new JsonObject();
+			person = personDAO.createPerson(person);
 			
-			if(personDAO.readPerson(person) != null){
-				j.addProperty("error", false);
-				j.add("data", parsePersonToJsonObject(person));
-				j.addProperty("message", "Usuário criado com sucesso." );
-				return Response.status(200).entity(j.toString()).build();
+			if(person != null){
+				String response = createResponse(false, person, "Usuário criado com sucesso.");
+				return Response.status(200).entity(response).build();
 				
 			}else{
-				j.addProperty("error", true);
-				j.addProperty("data", "");
-				j.addProperty("message", "Error ao criar usuário." );
-				return Response.status(500).entity(j.toString()).build();
+				String response = createResponse(true, null, "Error ao criar usuário.");
+				return Response.status(500).entity(response).build();
 			}	
 		
-			
 		} catch (Exception e) {
-			throw new WebApplicationException(500);
+			String response = createResponse(true, null, e.getMessage());
+			return Response.status(500).entity(response).build();
 		}
 	}
 	
@@ -73,25 +78,19 @@ public class UsuarioResource {
 	
 			MongoClient mongoClient = new MongoClient();
 			MongoDBPersonDAO personDAO = new MongoDBPersonDAO(mongoClient);
-			personDAO.updatePerson(person);
+			person = personDAO.updatePerson(person);
 			
-			JsonObject j = new JsonObject();
-			
-			if(personDAO.readPerson(person) != null){
-				j.addProperty("error", false);
-				j.add("data", parsePersonToJsonObject(person));
-				j.addProperty("message", "Usuário atualizado com sucesso." );
-				return Response.status(200).entity(j.toString()).build();	
+			if(person != null){
+				String response = createResponse(false, person, "Usuário atualizado com sucesso.");
+				return Response.status(200).entity(response).build();	
 			}else{
-				j.addProperty("error", true);
-				j.addProperty("data", "");
-				j.addProperty("message", "Error ao atualizar usuário." );
-				return Response.status(500).entity(j.toString()).build();
+				String response = createResponse(true, null, "Error ao atualizar usuário.");
+				return Response.status(500).entity(response).build();
 			}	
 		
-			
 		} catch (Exception e) {
-			throw new WebApplicationException(500);
+			String response = createResponse(true, null, e.getMessage());
+			return Response.status(500).entity(response).build();
 		}
 	}
 	
@@ -104,45 +103,38 @@ public class UsuarioResource {
 	
 			MongoClient mongoClient = new MongoClient();
 			MongoDBPersonDAO personDAO = new MongoDBPersonDAO(mongoClient);			
+			person = personDAO.loginPerson(person);
 			
-			JsonObject j = new JsonObject();
-			Person p = personDAO.loginPerson(person);
-			if(p != null){
-				j.addProperty("error", false);
-				j.add("data", parsePersonToJsonObject(p));
-				j.addProperty("message", "Login com sucesso." );
-				return Response.status(200).entity(j.toString()).build();		
+			if(person != null){
+				String response = createResponse(false, person, "Login com sucesso.");
+				return Response.status(200).entity(response).build();		
 			}else{
-				j.addProperty("error", true);
-				j.addProperty("data", "");
-				j.addProperty("message", "Usuário ou senha incorretos." );
-				return Response.status(500).entity(j.toString()).build();
+				String response = createResponse(true, null, "Usuário ou senha incorretos.");
+				return Response.status(500).entity(response).build();
 			}	
 		
-			
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new WebApplicationException(500);
+			String response = createResponse(true, null, e.getMessage());
+			return Response.status(500).entity(response).build();
 		}
 	}
 	
 	@GET
 	@Path("/getAll")
 	@Produces("application/json")
-	public List<Person> getAll(){
+	public Response getAll(){
 		
-	
 		try {
 			MongoClient mongoClient = new MongoClient();
 			MongoDBPersonDAO mongo = new MongoDBPersonDAO(mongoClient);
-			
-			ArrayList<Person> p = (ArrayList<Person>) mongo.readAllPerson();
-			return p;
+			ArrayList<Person> person = (ArrayList<Person>) mongo.readAllPerson();
+		
+			String response = createResponse(false, person, "");
+			return Response.status(200).entity(response).build();
 			
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new WebApplicationException(500);
+			String response = createResponse(true, null, e.getMessage());
+			return Response.status(500).entity(response).build();
 		}
 		
 	}

@@ -29,13 +29,14 @@ public class MongoDBPersonDAO {
 		this.col.insert(doc);
 		ObjectId id = (ObjectId) doc.get("_id");
 		p.setId(id.toString());
-		return p;
+		return readPerson(p);
 	}
 
-	public void updatePerson(Person p) {
+	public Person updatePerson(Person p) {
 		DBObject query = BasicDBObjectBuilder.start()
 				.append("_id", new ObjectId(p.getId())).get();
 		this.col.update(query, PersonConverter.toDBObject(p));
+		return readPerson(p);
 	}
 
 	public List<Person> readAllPerson() {
