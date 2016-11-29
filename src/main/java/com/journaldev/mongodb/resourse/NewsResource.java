@@ -110,6 +110,29 @@ public class NewsResource {
 		}
 	}
 
+	@POST
+	@Path("/deletar")
+	@Consumes("application/json")
+	@Produces("application/json")
+	public Response deletar(News news) {
+		
+		try {
+	
+			MongoClient mongoClient = new MongoClient();
+			MongoDBNewsDAO newsDAO = new MongoDBNewsDAO(mongoClient);
+			
+			newsDAO.deleteNews(news);
+
+			String response = createResponse(false, null, "Notícia deletada com sucesso.");
+			return Response.status(200).entity(response).build();
+			
+		} catch (Exception e) {
+			String response = createResponse(true, null, e.getMessage());
+			return Response.status(500).entity(response).build();
+		}
+	}
+
+	
 	@GET
 	@Path("/getNewsById/{id_news}")
 	@Produces("application/json")
@@ -182,6 +205,28 @@ public class NewsResource {
 		
 	}
 	
+	
+	@GET
+	@Path("/getAllNewsPerson/{id_person}")
+	@Produces("application/json")
+	public Response getAllNewsPerson(@PathParam("id_person") String id_person){
+		
+		try {
+			MongoClient mongoClient = new MongoClient();
+			MongoDBNewsDAO mongo = new MongoDBNewsDAO(mongoClient);
+			
+			// read news by type
+			ArrayList<News> news = (ArrayList<News>) mongo.readAllNewsPerson(id_person);
+			
+			String response = createResponse(false, news, "Lista de notÃ­cias do usuário");
+			return Response.status(200).entity(response).build();
+			
+		} catch (UnknownHostException e) {
+			String response = createResponse(true, null, e.getMessage());
+			return Response.status(500).entity(response).build();
+		}
+		
+	}
 	
 	@POST
 	@Path("/curtir")

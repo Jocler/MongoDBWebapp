@@ -1,5 +1,7 @@
 package com.journaldev.mongodb.dao;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -8,6 +10,7 @@ import org.bson.types.ObjectId;
 
 import com.journaldev.mongodb.converter.NewsConverter;
 import com.journaldev.mongodb.model.News;
+import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -28,7 +31,8 @@ public class MongoDBNewsDAO {
 	public News createNews(News n) {
 		
 		Calendar cal = Calendar.getInstance();
-		n.setDataPublicacao(String.valueOf(cal.getTime()));
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		n.setDataPublicacao(df.format(cal.getTime()));
 		
 		DBObject doc = NewsConverter.toDBObject(n);
 		this.col.insert(doc);
@@ -60,6 +64,20 @@ public class MongoDBNewsDAO {
 	public List<News> readNewsByType(String type) {
 		DBObject query = BasicDBObjectBuilder.start()
 				.append("tipo", type).get();
+		
+		List<News> data = new ArrayList<News>();
+		DBCursor cursor = col.find(query);
+		while (cursor.hasNext()) {
+			DBObject doc = cursor.next();
+			News n = NewsConverter.toNews(doc);
+			data.add(n);
+		}
+		return data;
+	}
+	
+	public List<News> readAllNewsPerson(String id_person) {
+		DBObject query = BasicDBObjectBuilder.start()
+				.append("person._id", new ObjectId(id_person)).get();
 		
 		List<News> data = new ArrayList<News>();
 		DBCursor cursor = col.find(query);

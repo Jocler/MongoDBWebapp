@@ -24,9 +24,11 @@ public class TestNews {
 			MongoDBNewsDAO newsDAO = new MongoDBNewsDAO(mongoClient);
 			MongoDBPersonDAO personDAO = new MongoDBPersonDAO(mongoClient);
 			
+			System.out.println(new Gson().toJson(newsDAO.readAllNewsPerson("583ba032ca85013f7044a3c5")));
+			
 			
 			// ##### Create news  #####
-			News news = new News();
+			/*News news = new News();
 			Calendar cal = Calendar.getInstance();
 	
 			news.setTipo("3");
@@ -40,7 +42,7 @@ public class TestNews {
 	
 			news.setPerson(person);
 			
-			System.out.println(new Gson().toJson(newsDAO.createNews(news)));
+			System.out.println(new Gson().toJson(newsDAO.createNews(news)));*/
 			
 			/*Curtida c = new Curtida();
 			c.setIdNews(news.getId());
