@@ -87,14 +87,16 @@ public class NewsResource {
 	@Path("/alterar")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response alterar(News news) {
+	public Response alterar(String  json) {
 		
 		try {
 	
+			News news = new Gson().fromJson(json, News.class);
 			MongoClient mongoClient = new MongoClient();
 			MongoDBNewsDAO newsDAO = new MongoDBNewsDAO(mongoClient);
+			news = newsDAO.updateNews(news);
 			
-			if(newsDAO.updateNews(news) != null){
+			if(news != null){
 				String response = createResponse(false, news, "Noticia alterada com sucesso.");
 				return Response.status(200).entity(response).build();
 				
