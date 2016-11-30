@@ -1,8 +1,8 @@
-package com.journaldev.mongodb.test;
+package com.aps.mongodb.test;
 
+import com.aps.mongodb.dao.MongoDBPersonDAO;
+import com.aps.mongodb.model.Person;
 import com.google.gson.Gson;
-import com.journaldev.mongodb.dao.MongoDBPersonDAO;
-import com.journaldev.mongodb.model.Person;
 import com.mongodb.MongoClient;
 
 public class TestPerson {

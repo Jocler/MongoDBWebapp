@@ -1,13 +1,13 @@
-package com.journaldev.mongodb.converter;
+package com.aps.mongodb.converter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
 
-import com.journaldev.mongodb.model.Curtida;
-import com.journaldev.mongodb.model.News;
-import com.journaldev.mongodb.model.Person;
+import com.aps.mongodb.model.Curtida;
+import com.aps.mongodb.model.News;
+import com.aps.mongodb.model.Person;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;

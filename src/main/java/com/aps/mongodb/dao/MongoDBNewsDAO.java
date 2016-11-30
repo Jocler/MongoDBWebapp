@@ -1,4 +1,4 @@
-package com.journaldev.mongodb.dao;
+package com.aps.mongodb.dao;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -8,9 +8,8 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 
-import com.journaldev.mongodb.converter.NewsConverter;
-import com.journaldev.mongodb.model.News;
-import com.mongodb.BasicDBObject;
+import com.aps.mongodb.converter.NewsConverter;
+import com.aps.mongodb.model.News;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -25,7 +24,7 @@ public class MongoDBNewsDAO {
 	private DBCollection col;
 
 	public MongoDBNewsDAO(MongoClient mongo) {
-		this.col = mongo.getDB("journaldev").getCollection("News");
+		this.col = mongo.getDB("aps-noticias").getCollection("News");
 	}
 
 	public News createNews(News n) {

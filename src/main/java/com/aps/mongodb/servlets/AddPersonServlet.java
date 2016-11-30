@@ -1,4 +1,4 @@
-package com.journaldev.mongodb.servlets;
+package com.aps.mongodb.servlets;
 
 import java.io.IOException;
 import java.util.List;
@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.journaldev.mongodb.dao.MongoDBPersonDAO;
-import com.journaldev.mongodb.model.Person;
+import com.aps.mongodb.dao.MongoDBPersonDAO;
+import com.aps.mongodb.model.Person;
 import com.mongodb.MongoClient;
 
 @WebServlet("/addPerson")

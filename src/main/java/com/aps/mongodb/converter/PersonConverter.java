@@ -1,8 +1,8 @@
-package com.journaldev.mongodb.converter;
+package com.aps.mongodb.converter;
 
 import org.bson.types.ObjectId;
 
-import com.journaldev.mongodb.model.Person;
+import com.aps.mongodb.model.Person;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
 

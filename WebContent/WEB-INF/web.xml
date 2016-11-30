@@ -15,7 +15,6 @@
 	</context-param>
 	
 	<welcome-file-list>
-		<welcome-file>index.jsp</welcome-file>
 		<welcome-file>persons.jsp</welcome-file>
 	</welcome-file-list>
 	
@@ -24,7 +23,7 @@
 		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.packages</param-name>
-			<param-value>com.journaldev.mongodb.resourse</param-value>
+			<param-value>com.aps.mongodb.resourse</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>

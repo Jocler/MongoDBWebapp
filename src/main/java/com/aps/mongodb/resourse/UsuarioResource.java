@@ -1,4 +1,4 @@
-package com.journaldev.mongodb.resourse;
+package com.aps.mongodb.resourse;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -10,13 +10,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-
+import com.aps.mongodb.dao.MongoDBPersonDAO;
+import com.aps.mongodb.model.Person;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.journaldev.mongodb.dao.MongoDBPersonDAO;
-import com.journaldev.mongodb.model.Person;
 import com.mongodb.MongoClient;
 
 

@@ -1,15 +1,15 @@
-package com.journaldev.mongodb.test;
+package com.aps.mongodb.test;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import com.aps.mongodb.dao.MongoDBNewsDAO;
+import com.aps.mongodb.dao.MongoDBPersonDAO;
+import com.aps.mongodb.model.Curtida;
+import com.aps.mongodb.model.News;
+import com.aps.mongodb.model.Person;
 import com.google.gson.Gson;
-import com.journaldev.mongodb.dao.MongoDBNewsDAO;
-import com.journaldev.mongodb.dao.MongoDBPersonDAO;
-import com.journaldev.mongodb.model.Curtida;
-import com.journaldev.mongodb.model.News;
-import com.journaldev.mongodb.model.Person;
 import com.mongodb.MongoClient;
 
 public class TestNews {

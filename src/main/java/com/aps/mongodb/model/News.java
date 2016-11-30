@@ -1,4 +1,4 @@
-package com.journaldev.mongodb.model;
+package com.aps.mongodb.model;
 
 import java.util.List;
 

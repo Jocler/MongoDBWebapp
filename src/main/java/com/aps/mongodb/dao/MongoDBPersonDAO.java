@@ -1,12 +1,12 @@
-package com.journaldev.mongodb.dao;
+package com.aps.mongodb.dao;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
 
-import com.journaldev.mongodb.converter.PersonConverter;
-import com.journaldev.mongodb.model.Person;
+import com.aps.mongodb.converter.PersonConverter;
+import com.aps.mongodb.model.Person;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -21,7 +21,7 @@ public class MongoDBPersonDAO {
 	private DBCollection col;
 
 	public MongoDBPersonDAO(MongoClient mongo) {
-		this.col = mongo.getDB("journaldev").getCollection("Persons");
+		this.col = mongo.getDB("aps-noticias").getCollection("Persons");
 	}
 
 	public Person createPerson(Person p) {
