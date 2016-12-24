@@ -10,6 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import com.aps.mongodb.dao.MongoDBNewsDAO;
 import com.aps.mongodb.dao.MongoDBPersonDAO;
 import com.aps.mongodb.model.Person;
 import com.google.gson.Gson;
@@ -55,9 +56,11 @@ public class UsuarioResource {
 			
 			if(person != null){
 				String response = createResponse(false, person, "Usuário criado com sucesso.");
+				mongoClient.close();
 				return Response.status(200).entity(response).build();
 				
 			}else{
+				mongoClient.close();
 				String response = createResponse(true, null, "Error ao criar usuário.");
 				return Response.status(500).entity(response).build();
 			}	
@@ -77,12 +80,16 @@ public class UsuarioResource {
 	
 			MongoClient mongoClient = new MongoClient();
 			MongoDBPersonDAO personDAO = new MongoDBPersonDAO(mongoClient);
+			MongoDBNewsDAO newsDAO = new MongoDBNewsDAO(mongoClient);
 			person = personDAO.updatePerson(person);
 			
 			if(person != null){
+				newsDAO.updateInfoPersonInNews(person);
 				String response = createResponse(false, person, "Usuário atualizado com sucesso.");
-				return Response.status(200).entity(response).build();	
+				mongoClient.close();
+				return Response.status(200).entity(response).build();
 			}else{
+				mongoClient.close();
 				String response = createResponse(true, null, "Error ao atualizar usuário.");
 				return Response.status(500).entity(response).build();
 			}	
@@ -106,8 +113,10 @@ public class UsuarioResource {
 			
 			if(person != null){
 				String response = createResponse(false, person, "Login com sucesso.");
+				mongoClient.close();
 				return Response.status(200).entity(response).build();		
 			}else{
+				mongoClient.close();
 				String response = createResponse(true, null, "Usuário ou senha incorretos.");
 				return Response.status(500).entity(response).build();
 			}	
@@ -128,7 +137,8 @@ public class UsuarioResource {
 			MongoDBPersonDAO mongo = new MongoDBPersonDAO(mongoClient);
 			ArrayList<Person> person = (ArrayList<Person>) mongo.readAllPerson();
 		
-			String response = createResponse(false, person, "");
+			String response = createResponse(false, person, "Lista de todos os usuarios");
+			mongoClient.close();
 			return Response.status(200).entity(response).build();
 			
 		} catch (UnknownHostException e) {

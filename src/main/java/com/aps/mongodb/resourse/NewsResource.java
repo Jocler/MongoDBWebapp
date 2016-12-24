@@ -69,9 +69,11 @@ public class NewsResource {
 			news = newsDAO.createNews(news);
 			if(news != null){
 				String response = createResponse(false, news, "Noticia criada com sucesso.");
+				mongoClient.close();
 				return Response.status(200).entity(response).build();
 				
 			}else{
+				mongoClient.close();
 				String response = createResponse(true, null, "Error ao criar noticia.");
 				return Response.status(500).entity(response).build();
 			}	
@@ -98,9 +100,11 @@ public class NewsResource {
 			
 			if(news != null){
 				String response = createResponse(false, news, "Noticia alterada com sucesso.");
+				mongoClient.close();
 				return Response.status(200).entity(response).build();
 				
 			}else{
+				mongoClient.close();
 				String response = createResponse(true, null, "Error ao alterar noticia.");
 				return Response.status(500).entity(response).build();
 			}
@@ -123,7 +127,7 @@ public class NewsResource {
 			MongoDBNewsDAO newsDAO = new MongoDBNewsDAO(mongoClient);
 			
 			newsDAO.deleteNews(news);
-
+			mongoClient.close();
 			String response = createResponse(false, null, "Notícia deletada com sucesso.");
 			return Response.status(200).entity(response).build();
 			
@@ -149,8 +153,10 @@ public class NewsResource {
 			news = mongoNews.readNews(news);
 			if(news != null){
 				String response = createResponse(false, news, "Noticia");
+				mongoClient.close();
 				return Response.status(200).entity(response).build();		
 			}else{
+				mongoClient.close();
 				String response = createResponse(true, null, "Noticia não exite.");
 				return Response.status(200).entity(response).build();			
 			}
@@ -175,6 +181,7 @@ public class NewsResource {
 			ArrayList<News> news = (ArrayList<News>) mongo.readAllNews();
 			
 			String response = createResponse(false, news, "Toda a lista de notÃ­cias");
+			mongoClient.close();
 			return Response.status(200).entity(response).build();
 			
 		} catch (UnknownHostException e) {
@@ -197,6 +204,7 @@ public class NewsResource {
 			ArrayList<News> news = (ArrayList<News>) mongo.readNewsByType(type);
 			
 			String response = createResponse(false, news, "Lista de notÃ­cias por tipo");
+			mongoClient.close();
 			return Response.status(200).entity(response).build();
 			
 		} catch (UnknownHostException e) {
@@ -220,6 +228,7 @@ public class NewsResource {
 			ArrayList<News> news = (ArrayList<News>) mongo.readAllNewsPerson(id_person);
 			
 			String response = createResponse(false, news, "Lista de notÃ­cias do usuário");
+			mongoClient.close();
 			return Response.status(200).entity(response).build();
 			
 		} catch (UnknownHostException e) {
@@ -259,6 +268,7 @@ public class NewsResource {
 			String msg = curtida.getLike() ? "Você curtiu!": "Você não curtiu!";
 			
 			String response = createResponse(false, news, msg);
+			mongoClient.close();
 			return Response.status(200).entity(response).build();
 			
 		} catch (UnknownHostException e) {

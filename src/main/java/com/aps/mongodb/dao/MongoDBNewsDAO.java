@@ -10,6 +10,8 @@ import org.bson.types.ObjectId;
 
 import com.aps.mongodb.converter.NewsConverter;
 import com.aps.mongodb.model.News;
+import com.aps.mongodb.model.Person;
+import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -86,6 +88,18 @@ public class MongoDBNewsDAO {
 			data.add(n);
 		}
 		return data;
+	}
+	
+	public void updateInfoPersonInNews(Person person) {
+		
+		BasicDBObject newsUpdate = new BasicDBObject();
+		newsUpdate.append("$set", new BasicDBObject().append("person.name", person.getName()).append("person.photo", person.getPhoto()));
+		
+		DBObject query = BasicDBObjectBuilder.start()
+				.append("person._id", new ObjectId(person.getId())).get();
+		
+		this.col.updateMulti(query, newsUpdate);
+	
 	}
 
 	public void deleteNews(News n) {
